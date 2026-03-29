@@ -1,3 +1,9 @@
+/* Header font color black */
+.site-header .navbar .nav-links a,
+.site-header .navbar .brand,
+.site-header .navbar .brand * {
+    color: #111 !important;
+}
 /* Section gap for smaller sections */
 .section-gap-small {
     margin-top: 2em;
@@ -146,10 +152,15 @@
     box-shadow: 0 8px 32px rgba(52,152,219,0.16);
 }
 .feature-img {
-    width: 80px;
-    height: 80px;
+    width: 100%;
+    max-width: 300px;
+    height: 200px;
     border-radius: 18px;
     margin-bottom: 0.7em;
+    object-fit: cover;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 .feature-img-cover {
     object-fit: cover;
@@ -354,16 +365,16 @@
     text-align: center;
 }
 .feature-img {
-    width: 80px;
-    height: 80px;
+    width: 95%;
+    max-width: 220px;
+    aspect-ratio: 1 / 1;
     border-radius: 18px;
     margin-bottom: 0.7em;
-}
-.feature-img-cover {
     object-fit: cover;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
-.feature-title {
-    color: var(--medical-blue);
     margin-bottom: 0.3em;
 }
 .feature-desc {
@@ -736,6 +747,17 @@ h3 {
 .button-small {
     min-height: 2.6rem;
     padding: 0.7rem 1.1rem;
+}
+
+/* Glow effect for Sign Up button */
+.button.button-small {
+    box-shadow: 0 0 12px 2px var(--accent, #90e9d7), 0 2px 8px rgba(52,152,219,0.10);
+    background: linear-gradient(90deg, var(--accent, #a9f3e4) 60%, #8bf8ed 100%);
+    border: none;
+}
+.button.button-small:hover {
+    box-shadow: 0 0 20px 4px var(--accent-dark, #aaf1e3), 0 4px 16px rgba(144, 207, 250, 0.18);
+    background: linear-gradient(90deg, var(--accent-dark, #95f3e0) 60%, #38b2ac 100%);
 }
 
 .eyebrow {
