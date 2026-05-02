@@ -36,8 +36,9 @@
         </header>
 
         <main class="main-bg">
-            <!-- Search Bar Section -->
-            <section class="container section-gap">
+            <!-- Health Concerns Heading and Search Bar at Top -->
+            <section class="container section-gap-small">
+                <h2 class="health-section-title">Consult top doctors online for any health concern</h2>
                 <div class="search-bar-row">
                     <select class="city-select" title="Select your city">
                         <option>Bangalore</option>
@@ -45,7 +46,7 @@
                         <option>Kolkata</option>
                         <option>Patna</option>
                     </select>
-                    <input type="text" class="search-input" placeholder="Search doctors, clinics, hospitals, etc;">
+                    <input type="text" class="search-input" placeholder="Search by name, address, insurance, department">
                 </div>
             </section>
 
@@ -74,66 +75,101 @@
                     </div>
                 </div>
             </section>
-
-            <!-- Health Concerns Section -->
-            <section class="container section-gap-small">
-                <h2 class="health-section-title">Consult top doctors online for any health concern</h2>
-                <div class="health-concerns-flex">
-                    <div class="health-card">
-                        <img src="https://cdn-icons-png.flaticon.com/512/3062/3062634.png" alt="Pregnancy" class="health-img">
-                        <div class="health-label">Pregnancy</div>
-                        <a href="#" class="health-link">Consult Now</a>
+               
+                            
+                        </aside>
+                        <main class="main-content">
+                            <!-- Search Bar -->
+                            
+                            <!-- Dynamic Sections -->
+                            
+                            <section id="home" class="section-content" style="display:none;">
+                                <h2>Home</h2>
+                                <p>Welcome to Sehat-Setu! Access all your health services in one place.</p>
+                            </section>
+                            <section id="hospitals" class="section-content" style="display:none;">
+                                <h2>Hospitals</h2>
+                                <ul>
+                                    <li>Govt. hospitals</li>
+                                    <li>Pvt. hospitals</li>
+                                    <li>Trust-based hospitals</li>
+                                </ul>
+                            </section>
+                            <section id="doctors" class="section-content" style="display:none;">
+                                <h2>Doctors</h2>
+                                <ul>
+                                    <li>Available today</li>
+                                    <li>Best doctors</li>
+                                    <li>Searching via address</li>
+                                    <li>By their specialization (search)</li>
+                                    <li>Via hospitals</li>
+                                </ul>
+                            </section>
+                            <section id="ebookings" class="section-content" style="display:none;">
+                                <h2>E-Bookings</h2>
+                                <ul>
+                                    <li>Appointments</li>
+                                    <li>Tests
+                                        <ul>
+                                            <li>Blood test</li>
+                                            <li>CT</li>
+                                            <li>MRI</li>
+                                            <li>X-Rays</li>
+                                            <li>Special test</li>
+                                            <li>Ultrasound</li>
+                                            <li>Other tests</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </section>
+                            <section id="compare" class="section-content" style="display:none;">
+                                <h2>Compare & See</h2>
+                                <ul>
+                                    <li>Doctors</li>
+                                    <li>Hospitals (based on their facilities)</li>
+                                </ul>
+                            </section>
+                            <section id="ambulance" class="section-content" style="display:none;">
+                                <h2>Ambulance & Emergency Services</h2>
+                                <ul>
+                                    <li>ICU Services</li>
+                                    <li>24×7 Services</li>
+                                    <li>Blood bank facility (Available)</li>
+                                    <li>Trauma Center</li>
+                                    <li>Ambulance
+                                        <ul>
+                                            <li>Hospital Ambulance</li>
+                                            <li>Pvt. Ambulance</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </section>
+                            <section id="insurance" class="section-content" style="display:none;">
+                                <h2>Insurance & EMI</h2>
+                                <ul>
+                                    <li>Check cashless availability</li>
+                                    <li>Insurances available for claim</li>
+                                    <li>EMI options (Hospital/company)</li>
+                                    <li>Insurance coverage understanding</li>
+                                </ul>
+                            </section>
+                            <section id="login" class="section-content" style="display:none;">
+                                <h2>Login</h2>
+                                <form id="login-form">
+                                    <input type="text" placeholder="Username" required><br>
+                                    <input type="password" placeholder="Password" required><br>
+                                    <button type="submit">Login</button>
+                                </form>
+                                <div id="login-status"></div>
+                                <ul>
+                                    <li>My appointments</li>
+                                    <li>Status</li>
+                                    <li>Recommendation by AI Health</li>
+                                </ul>
+                            </section>
+                        </main>
                     </div>
-                    <div class="health-card">
-                        <img src="https://cdn-icons-png.flaticon.com/512/3062/3062633.png" alt="Skin Issues" class="health-img">
-                        <div class="health-label">Skin Issues</div>
-                        <a href="#" class="health-link">Consult Now</a>
-                    </div>
-                    <div class="health-card">
-                        <img src="https://cdn-icons-png.flaticon.com/512/3062/3062632.png" alt="Performance" class="health-img">
-                        <div class="health-label">Performance</div>
-                        <a href="#" class="health-link">Consult Now</a>
-                    </div>
-                    <div class="health-card">
-                        <img src="https://cdn-icons-png.flaticon.com/512/3062/3062631.png" alt="Fever" class="health-img">
-                        <div class="health-label">Fever</div>
-                        <a href="#" class="health-link">Consult Now</a>
-                    </div>
-                    <div class="health-card">
-                        <img src="https://cdn-icons-png.flaticon.com/512/3062/3062630.png" alt="Child Health" class="health-img">
-                        <div class="health-label">Child Health</div>
-                        <a href="#" class="health-link">Consult Now</a>
-                    </div>
-                    <div class="health-card">
-                        <img src="https://cdn-icons-png.flaticon.com/512/3062/3062629.png" alt="Anxiety" class="health-img">
-                        <div class="health-label">Anxiety</div>
-                        <a href="#" class="health-link">Consult Now</a>
-                    </div>
-                </div>
-                <div class="health-viewall">
-                    <a class="btn-medical health-viewall-btn" href="#">View All Specialities</a>
-                </div>
-            </section>
-            <section class="content-section container section-gap-small">
-                <div class="section-heading section-heading-margin">
-                    <p class="eyebrow">Telehealth Access</p>
-                    <h2>Consult with Our Doctor—Anywhere, Anytime</h2>
-                    <p class="telehealth-desc">
-                        Experience the convenience of modern healthcare with Sehat Setu. Whether you have a quick question, need urgent advice, or want a full consultation, our doctors are just a call or video chat away. No matter where you are, you can connect with trusted medical professionals for personalized care, follow-ups, and peace of mind—right from your home or on the go.
-                    </p>
-                </div>
-                <div class="card-medical telehealth-flex">
-                    <div class="telehealth-info">
-                        <h2><span class="icon-medical">📞</span> Consult with Our Doctor</h2>
-                        <p class="telehealth-desc2">Anywhere, anytime—connect with our doctors by phone or video call for instant medical advice and care. Your health is just a call away, whether at home or on the go.</p>
-                        <div class="hero-actions telehealth-actions">
-                            <a class="btn-medical telehealth-btn-margin" href="#"><span class="icon-medical">📱</span> Phone Call</a>
-                            <a class="btn-medical telehealth-btn-blue" href="#"><span class="icon-medical">🎥</span> Video Call</a>
-                        </div>
-                    </div>
-                    <div class="telehealth-img-wrap">
-                        <img src="https://cdn.pixabay.com/photo/2017/01/10/19/05/doctor-1979434_1280.png" alt="Doctor Consultation" class="telehealth-img" loading="lazy">
-                    </div>
+                    
                 </div>
             </section>
 
@@ -244,5 +280,6 @@
     </div>
 
     <script src="assets/script.js"></script>
+    <script src="assets/system-controller.js"></script>
 </body>
 </html>

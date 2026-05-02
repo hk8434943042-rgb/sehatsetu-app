@@ -1,63 +1,53 @@
-const menuButton = document.querySelector('.menu-toggle');
-const navLinks = document.querySelector('.nav-links');
-const yearElement = document.querySelector('#currentYear');
-const root = document.documentElement;
-const themeStorageKey = 'sehatsetu-theme';
+// --- Sehat-Setu SPA Navigation & Login Logic ---
+document.addEventListener('DOMContentLoaded', function () {
+    const navLinks = document.querySelectorAll('.nav-link');
+    const sections = document.querySelectorAll('.section-content');
+    const loginForm = document.getElementById('login-form');
+    const loginStatus = document.getElementById('login-status');
+    const homeLink = document.getElementById('home-link');
+    const loginLink = document.getElementById('login-link');
 
-function applyTheme(themeName) {
-    if (themeName === 'mono') {
-        root.setAttribute('data-theme', 'mono');
-        return;
+    // Helper: Show only the selected section
+    function showSection(sectionId) {
+        sections.forEach(sec => {
+            sec.style.display = (sec.id === sectionId) ? '' : 'none';
+        });
+        navLinks.forEach(link => {
+            if (link.dataset.section === sectionId) {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
+            }
+        });
     }
 
-    root.removeAttribute('data-theme');
-}
+    // Navigation click handler
+    navLinks.forEach(link => {
+        link.addEventListener('click', function (e) {
+            e.preventDefault();
+            const section = this.dataset.section;
+            showSection(section);
+        });
+    });
 
-function createThemeToggle() {
-    const existingToggle = document.querySelector('.theme-toggle');
-    if (existingToggle) {
-        return existingToggle;
+    // Default: show Overview
+    showSection('overview');
+
+    // Simple login logic (demo only)
+    if (loginForm) {
+        loginForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            // Demo: any username/password logs in
+            loginStatus.textContent = 'Login successful!';
+            setTimeout(() => {
+                // Hide Overview, show Home, hide Login link, show Home link
+                showSection('home');
+                homeLink.style.display = '';
+                loginLink.style.display = 'none';
+            }, 700);
+        });
     }
-
-    const toggle = document.createElement('button');
-    toggle.type = 'button';
-    toggle.className = 'theme-toggle';
-    document.body.appendChild(toggle);
-    return toggle;
-}
-
-function updateToggleLabel(toggleElement) {
-    const monoEnabled = root.getAttribute('data-theme') === 'mono';
-    toggleElement.textContent = monoEnabled ? 'Color Theme' : 'B/W Theme';
-    toggleElement.setAttribute('aria-label', monoEnabled ? 'Switch to color theme' : 'Switch to black and white theme');
-}
-
-if (yearElement) {
-    yearElement.textContent = new Date().getFullYear();
-}
-
-const savedTheme = localStorage.getItem(themeStorageKey);
-applyTheme(savedTheme);
-
-const themeToggleButton = createThemeToggle();
-updateToggleLabel(themeToggleButton);
-
-themeToggleButton.addEventListener('click', () => {
-    const nextTheme = root.getAttribute('data-theme') === 'mono' ? 'color' : 'mono';
-    applyTheme(nextTheme);
-
-    if (nextTheme === 'mono') {
-        localStorage.setItem(themeStorageKey, 'mono');
-    } else {
-        localStorage.removeItem(themeStorageKey);
-    }
-
-    updateToggleLabel(themeToggleButton);
 });
-
-if (menuButton && navLinks) {
-    menuButton.addEventListener('click', () => {
-        const isExpanded = menuButton.getAttribute('aria-expanded') === 'true';
         menuButton.setAttribute('aria-expanded', String(!isExpanded));
         navLinks.classList.toggle('is-open', !isExpanded);
     });
