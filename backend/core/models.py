@@ -56,6 +56,27 @@ class Review(models.Model):
     def __str__(self):
         return f"Review {self.rating_overall}"
 
+class Appointment(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('confirmed', 'Confirmed'),
+        ('completed', 'Completed'),
+        ('cancelled', 'Cancelled'),
+    ]
+
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='appointments')
+    patient_name = models.CharField(max_length=255)
+    patient_email = models.EmailField()
+    patient_phone = models.CharField(max_length=20)
+    appointment_date = models.DateField()
+    appointment_time = models.TimeField()
+    reason = models.TextField(blank=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Appointment with {self.doctor.name} on {self.appointment_date} at {self.appointment_time}"
+
 class LabTest(models.Model):
     TEST_TYPE_CHOICES = [
         ('blood', 'Blood Test'),

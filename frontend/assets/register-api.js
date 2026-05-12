@@ -17,10 +17,10 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         try {
-            const response = await fetch('http://localhost:5000/api/register', {
+            const response = await fetch('http://127.0.0.1:8000/api/register/', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, email, password })
+                body: JSON.stringify({ name, email, password, phone: phoneInput.value.trim(), city: cityInput.value.trim() })
             });
             const data = await response.json();
             if (response.ok) {
