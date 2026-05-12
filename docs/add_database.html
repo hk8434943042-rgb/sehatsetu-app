@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Database Entry | Sehat Setu</title>
+    <link rel="stylesheet" href="assets/styles.css">
+    <style>
+        body {
+            background: #f0f7fb;
+            color: #333;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+        }
+        .section {
+            margin-bottom: 40px;
+        }
+        h1, h2 {
+            color: #105592;
+            margin-bottom: 15px;
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        input, select, textarea {
+            padding: 12px;
+            border: 1px solid #d3d9e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        .button-row {
+            margin-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        button {
+            padding: 12px 24px;
+            border: none;
+            background: #2f8ef7;
+            color: white;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+        button:hover {
+            background: #1864c7;
+        }
+        .message {
+            margin-top: 14px;
+            padding: 12px 16px;
+            border-radius: 8px;
+        }
+        .success {
+            background: #e8f8ef;
+            color: #1e7a4d;
+            border: 1px solid #aedab5;
+        }
+        .error {
+            background: #fde7e7;
+            color: #a32626;
+            border: 1px solid #e4a7a7;
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <a href="index.html" class="site-brand">
+            <img src="assets/sehatsetu-logo.png" alt="Sehat Setu Logo" class="site-logo">
+            <div class="brand-text">
+                <strong>Sehat Setu</strong>
+                <span class="brand-subtitle">Dashboard & Health Connect</span>
+            </div>
+        </a>
+        <nav class="site-nav">
+            <a href="dashboard.html">Dashboard</a>
+            <a href="doctors.html">Doctors</a>
+            <a href="hospitals.html">Hospitals</a>
+            <a href="compare.html">Compare</a>
+            <a href="login.html">Login</a>
+        </nav>
+    </header>
+    <div class="container">
+        <h1>Add Database Entry</h1>
+        <p>Use these forms to add hospitals or doctors to the backend database.</p>
+
+        <div class="section">
+            <h2>Add Hospital</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="hospitalName">Name</label>
+                    <input id="hospitalName" type="text" placeholder="Hospital name">
+                </div>
+                <div class="form-group">
+                    <label for="hospitalLocation">Location</label>
+                    <input id="hospitalLocation" type="text" placeholder="City or area">
+                </div>
+                <div class="form-group">
+                    <label for="hospitalType">Type</label>
+                    <select id="hospitalType">
+                        <option value="private">Private</option>
+                        <option value="government">Government</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="hospitalBeds">Beds</label>
+                    <input id="hospitalBeds" type="number" min="0" placeholder="Number of beds">
+                </div>
+                <div class="form-group">
+                    <label for="hospitalSpecialties">Specialties</label>
+                    <input id="hospitalSpecialties" type="text" placeholder="e.g. Cardiology, Orthopedics">
+                </div>
+                <div class="form-group">
+                    <label for="hospitalFacilities">Facilities</label>
+                    <input id="hospitalFacilities" type="text" placeholder="e.g. ICU, Pharmacy, Lab">
+                </div>
+                <div class="form-group">
+                    <label for="hospitalPriceRange">Price Range</label>
+                    <input id="hospitalPriceRange" type="text" placeholder="e.g. ₹500-₹2000">
+                </div>
+                <div class="form-group">
+                    <label for="hospitalPhoto">Hospital Image</label>
+                    <input id="hospitalPhoto" type="file" accept="image/*">
+                </div>
+                <div class="form-group">
+                    <label for="hospitalRating">Rating</label>
+                    <input id="hospitalRating" type="number" step="0.1" min="0" max="5" placeholder="4.5">
+                </div>
+                <div class="form-group">
+                    <label for="hospitalContact">Contact Number</label>
+                    <input id="hospitalContact" type="text" placeholder="Phone number">
+                </div>
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <label for="hospitalAddress">Address</label>
+                    <textarea id="hospitalAddress" placeholder="Full address"></textarea>
+                </div>
+            </div>
+            <div class="button-row">
+                <button onclick="submitHospital()">Add Hospital</button>
+            </div>
+            <div id="hospitalMessage" class="message" style="display:none"></div>
+        </div>
+
+        <div class="section">
+            <h2>Add Doctor</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="doctorName">Name</label>
+                    <input id="doctorName" type="text" placeholder="Doctor name">
+                </div>
+                <div class="form-group">
+                    <label for="doctorSpecialty">Specialty</label>
+                    <input id="doctorSpecialty" type="text" placeholder="e.g. Cardiology">
+                </div>
+                <div class="form-group">
+                    <label for="doctorLocation">Location</label>
+                    <input id="doctorLocation" type="text" placeholder="City or area">
+                </div>
+                <div class="form-group">
+                    <label for="doctorExperience">Experience (years)</label>
+                    <input id="doctorExperience" type="number" min="0" placeholder="5">
+                </div>
+                <div class="form-group">
+                    <label for="doctorHospitalId">Hospital ID</label>
+                    <input id="doctorHospitalId" type="number" min="1" placeholder="Existing hospital ID">
+                </div>
+                <div class="form-group">
+                    <label for="doctorEmail">Email</label>
+                    <input id="doctorEmail" type="email" placeholder="doctor@example.com">
+                </div>
+                <div class="form-group">
+                    <label for="doctorContact">Contact Number</label>
+                    <input id="doctorContact" type="text" placeholder="Phone number">
+                </div>
+                <div class="form-group">
+                    <label for="doctorPhoto">Doctor Image</label>
+                    <input id="doctorPhoto" type="file" accept="image/*">
+                </div>
+                <div class="form-group">
+                    <label for="doctorRating">Rating</label>
+                    <input id="doctorRating" type="number" step="0.1" min="0" max="5" placeholder="4.7">
+                </div>
+                <div class="form-group">
+                    <label for="doctorFee">Consultation Fee</label>
+                    <input id="doctorFee" type="number" step="0.01" min="0" placeholder="500.00">
+                </div>
+                <div class="form-group">
+                    <label for="doctorDays">Available Days</label>
+                    <input id="doctorDays" type="text" placeholder="Mon-Fri">
+                </div>
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <label for="doctorQualifications">Qualifications</label>
+                    <textarea id="doctorQualifications" placeholder="Degrees and certifications"></textarea>
+                </div>
+            </div>
+            <div class="button-row">
+                <button onclick="submitDoctor()">Add Doctor</button>
+            </div>
+            <div id="doctorMessage" class="message" style="display:none"></div>
+        </div>
+
+        <div class="section">
+            <h2>Delete Hospital</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="deleteHospitalId">Hospital ID</label>
+                    <input id="deleteHospitalId" type="number" min="1" placeholder="Hospital ID to delete">
+                </div>
+            </div>
+            <div class="button-row">
+                <button onclick="deleteHospital()">Delete Hospital</button>
+            </div>
+            <div id="deleteHospitalMessage" class="message" style="display:none"></div>
+        </div>
+
+        <div class="section">
+            <h2>Delete Doctor</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="deleteDoctorId">Doctor ID</label>
+                    <input id="deleteDoctorId" type="number" min="1" placeholder="Doctor ID to delete">
+                </div>
+            </div>
+            <div class="button-row">
+                <button onclick="deleteDoctor()">Delete Doctor</button>
+            </div>
+            <div id="deleteDoctorMessage" class="message" style="display:none"></div>
+        </div>
+    </div>
+
+    <script>
+        const backendUrl = 'http://127.0.0.1:8000';
+
+        async function submitHospital() {
+            const formData = new FormData();
+            formData.append('name', document.getElementById('hospitalName').value);
+            formData.append('location', document.getElementById('hospitalLocation').value);
+            formData.append('type', document.getElementById('hospitalType').value);
+            formData.append('beds', document.getElementById('hospitalBeds').value);
+            formData.append('specialties', document.getElementById('hospitalSpecialties').value);
+            formData.append('facilities', document.getElementById('hospitalFacilities').value);
+            formData.append('price_range', document.getElementById('hospitalPriceRange').value);
+            formData.append('rating', document.getElementById('hospitalRating').value);
+            formData.append('contact_number', document.getElementById('hospitalContact').value);
+            formData.append('address', document.getElementById('hospitalAddress').value);
+            const photoInput = document.getElementById('hospitalPhoto');
+            if (photoInput.files.length > 0) {
+                formData.append('photo', photoInput.files[0]);
+            }
+            const message = document.getElementById('hospitalMessage');
+            try {
+                const response = await fetch(`${backendUrl}/api/add_hospital/`, {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                if (response.ok && data.success) {
+                    message.className = 'message success';
+                    message.textContent = `Hospital created successfully (ID: ${data.id}).`;
+                } else {
+                    message.className = 'message error';
+                    message.textContent = data.error || 'Failed to create hospital.';
+                }
+            } catch (error) {
+                message.className = 'message error';
+                message.textContent = 'Error connecting to backend. Make sure the server is running.';
+            }
+            message.style.display = 'block';
+        }
+
+        async function submitDoctor() {
+            const formData = new FormData();
+            formData.append('name', document.getElementById('doctorName').value);
+            formData.append('specialty', document.getElementById('doctorSpecialty').value);
+            formData.append('location', document.getElementById('doctorLocation').value);
+            formData.append('experience_years', document.getElementById('doctorExperience').value);
+            formData.append('hospital_id', document.getElementById('doctorHospitalId').value);
+            formData.append('email', document.getElementById('doctorEmail').value);
+            formData.append('contact_number', document.getElementById('doctorContact').value);
+            formData.append('rating', document.getElementById('doctorRating').value);
+            formData.append('consultation_fee', document.getElementById('doctorFee').value);
+            formData.append('available_days', document.getElementById('doctorDays').value);
+            formData.append('qualifications', document.getElementById('doctorQualifications').value);
+            const photoInput = document.getElementById('doctorPhoto');
+            if (photoInput.files.length > 0) {
+                formData.append('photo', photoInput.files[0]);
+            }
+            const message = document.getElementById('doctorMessage');
+            try {
+                const response = await fetch(`${backendUrl}/api/add_doctor/`, {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                if (response.ok && data.success) {
+                    message.className = 'message success';
+                    message.textContent = `Doctor created successfully (ID: ${data.id}).`;
+                } else {
+                    message.className = 'message error';
+                    message.textContent = data.error || 'Failed to create doctor.';
+                }
+            } catch (error) {
+                message.className = 'message error';
+                message.textContent = 'Error connecting to backend. Make sure the server is running.';
+            }
+            message.style.display = 'block';
+        }
+
+        async function deleteHospital() {
+            const hospitalId = document.getElementById('deleteHospitalId').value;
+            const message = document.getElementById('deleteHospitalMessage');
+            try {
+                const response = await fetch(`${backendUrl}/api/delete_hospital/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ hospital_id: hospitalId })
+                });
+                const data = await response.json();
+                if (response.ok && data.success) {
+                    message.className = 'message success';
+                    message.textContent = 'Hospital deleted successfully.';
+                } else {
+                    message.className = 'message error';
+                    message.textContent = data.error || 'Failed to delete hospital.';
+                }
+            } catch (error) {
+                message.className = 'message error';
+                message.textContent = 'Error connecting to backend. Make sure the server is running.';
+            }
+            message.style.display = 'block';
+        }
+
+        async function deleteDoctor() {
+            const doctorId = document.getElementById('deleteDoctorId').value;
+            const message = document.getElementById('deleteDoctorMessage');
+            try {
+                const response = await fetch(`${backendUrl}/api/delete_doctor/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ doctor_id: doctorId })
+                });
+                const data = await response.json();
+                if (response.ok && data.success) {
+                    message.className = 'message success';
+                    message.textContent = 'Doctor deleted successfully.';
+                } else {
+                    message.className = 'message error';
+                    message.textContent = data.error || 'Failed to delete doctor.';
+                }
+            } catch (error) {
+                message.className = 'message error';
+                message.textContent = 'Error connecting to backend. Make sure the server is running.';
+            }
+            message.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
