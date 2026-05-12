@@ -1,7 +1,9 @@
 // API helper for dashboard
+const backendUrl = 'http://127.0.0.1:8000';
+
 async function fetchUsers() {
     try {
-        const response = await fetch('http://localhost:5000/api/users');
+        const response = await fetch(`${backendUrl}/api/users`);
         if (!response.ok) throw new Error('Failed to fetch users');
         return await response.json();
     } catch (err) {

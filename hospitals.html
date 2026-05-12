@@ -13,6 +13,12 @@
             margin: 10px 0;
             background: white;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            animation: fadeInUp 0.5s ease both;
+        }
+        .hospital-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 14px 24px rgba(0,0,0,0.12);
         }
         .hospital-photo {
             text-align: center;
@@ -24,6 +30,10 @@
             object-fit: cover;
             border-radius: 6px;
             border: 2px solid #eee;
+            transition: transform 0.3s ease;
+        }
+        .hospital-card:hover .hospital-image {
+            transform: scale(1.02);
         }
         .no-photo {
             width: 100%;
@@ -86,6 +96,11 @@
             padding: 15px;
             border-radius: 8px;
             margin-bottom: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .filters:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.06);
         }
         .filter-row {
             display: flex;
@@ -116,9 +131,24 @@
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
             display: none;
+            animation: fadeInUp 0.5s ease both;
         }
         .compare-list {
             margin: 10px 0;
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes pageFadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         .compare-item {
             display: flex;
@@ -154,6 +184,22 @@
     </style>
 </head>
 <body>
+    <header class="site-header">
+        <a href="index.html" class="site-brand">
+            <img src="assets/sehatsetu-logo.png" alt="Sehat Setu Logo" class="site-logo">
+            <div class="brand-text">
+                <strong>Sehat Setu</strong>
+                <span class="brand-subtitle">Dashboard & Health Connect</span>
+            </div>
+        </a>
+        <nav class="site-nav">
+            <a href="dashboard.html">Dashboard</a>
+            <a href="doctors.html">Doctors</a>
+            <a href="hospitals.html">Hospitals</a>
+            <a href="compare.html">Compare</a>
+            <a href="login.html">Login</a>
+        </nav>
+    </header>
     <div class="container">
         <h1>Hospitals Directory</h1>
 
