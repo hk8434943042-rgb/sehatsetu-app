@@ -1,11 +1,13 @@
-from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect
 from django.db.models import Avg
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET
 import json
 from accounts.models import User
-from .models import Review, Hospital, Doctor, Appointment
+from .models import Review, Hospital, Doctor, Appointment, LabTest, LabTestBooking, LabTestReport
 
 def home(request):
     return HttpResponse(
@@ -158,7 +160,96 @@ def doctor_detail_api(request, doctor_id):
 
 
 @csrf_exempt
-def register(request):
+def login_view(request):
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+    try:
+        data = json.loads(request.body.decode('utf-8') if isinstance(request.body, bytes) else request.body)
+    except Exception:
+        data = request.POST
+
+    email = data.get('email', '').strip()
+    password = data.get('password', '')
+
+    if not email or not password:
+        return JsonResponse({'error': 'Email and password are required.'}, status=400)
+
+    # Try to authenticate with email as username first, then check if email exists
+    user = authenticate(request, username=email, password=password)
+    if user is None:
+        # Try to find user by email and authenticate with username
+        try:
+            user_obj = User.objects.get(email=email)
+            user = authenticate(request, username=user_obj.username, password=password)
+        except User.DoesNotExist:
+            pass
+
+    if user is not None:
+        login(request, user)
+        return JsonResponse({
+            'success': True,
+            'user_type': user.user_type,
+            'user': {
+                'id': user.id,
+                'username': user.username,
+                'email': user.email,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'user_type': user.user_type,
+                'phone_number': user.phone_number,
+                'city': user.city,
+            }
+        })
+    else:
+        return JsonResponse({'error': 'Invalid credentials.'}, status=400)
+
+@csrf_exempt
+def logout_view(request):
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+    logout(request)
+    return JsonResponse({'success': True})
+
+@login_required
+def current_user_view(request):
+    user = request.user
+    return JsonResponse({
+        'id': user.id,
+        'username': user.username,
+        'email': user.email,
+        'first_name': user.first_name,
+        'last_name': user.last_name,
+        'user_type': user.user_type,
+        'phone_number': user.phone_number,
+        'city': user.city,
+        'age': user.age,
+        'gender': user.gender,
+        'address': user.address,
+    })
+
+@login_required
+def users_list(request):
+    if request.user.user_type != 'admin':
+        return JsonResponse({'error': 'Access denied. Admin only.'}, status=403)
+
+    users = User.objects.all()
+    users_data = []
+    for user in users:
+        users_data.append({
+            'id': user.id,
+            'username': user.username,
+            'email': user.email,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'user_type': user.user_type,
+            'phone_number': user.phone_number,
+            'city': user.city,
+            'date_created': user.date_created.isoformat(),
+        })
+
+    return JsonResponse({'users': users_data})
     if request.method != 'POST':
         return JsonResponse({'error': 'Method not allowed'}, status=405)
 
@@ -356,16 +447,20 @@ def book_appointment(request):
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=400)
 
+@login_required
 @require_GET
 def appointments_list(request):
-    doctor_id = request.GET.get('doctor_id')
-    email = request.GET.get('patient_email')
+    user = request.user
     appointments = Appointment.objects.select_related('doctor', 'doctor__hospital').all()
 
-    if doctor_id:
-        appointments = appointments.filter(doctor_id=doctor_id)
-    if email:
-        appointments = appointments.filter(patient_email__iexact=email)
+    # Filter based on user type
+    if user.user_type == 'patient':
+        appointments = appointments.filter(patient_email__iexact=user.email)
+    elif user.user_type == 'doctor':
+        # For doctors, we need to match by doctor name or add a doctor field to Appointment model
+        # For now, filter by doctor's email if available, or show all (admin can manage)
+        appointments = appointments.filter(doctor__email__iexact=user.email)
+    # Admin sees all appointments
 
     result = []
     for apt in appointments:
@@ -374,11 +469,12 @@ def appointments_list(request):
             'doctor': {
                 'id': apt.doctor.id,
                 'name': apt.doctor.name,
-            },
+            } if apt.doctor else None,
+            'doctor_name': apt.doctor.name if apt.doctor else 'Not assigned',
             'hospital': {
                 'id': apt.doctor.hospital.id,
                 'name': apt.doctor.hospital.name,
-            },
+            } if apt.doctor and apt.doctor.hospital else None,
             'patient_name': apt.patient_name,
             'patient_email': apt.patient_email,
             'patient_phone': apt.patient_phone,
@@ -390,4 +486,206 @@ def appointments_list(request):
         })
 
     return JsonResponse({'appointments': result})
+
+@require_GET
+def lab_tests_list(request):
+    """API endpoint to get list of lab tests with optional filtering"""
+    lab_tests = LabTest.objects.select_related('hospital').filter(available=True)
+
+    # Filtering
+    hospital_id = request.GET.get('hospital_id')
+    if hospital_id:
+        lab_tests = lab_tests.filter(hospital_id=hospital_id)
+
+    test_type = request.GET.get('type')
+    if test_type in ['blood', 'urine', 'imaging', 'other']:
+        lab_tests = lab_tests.filter(type=test_type)
+
+    # Convert to list of dicts
+    lab_tests_data = []
+    for test in lab_tests:
+        lab_tests_data.append({
+            'id': test.id,
+            'name': test.name,
+            'photo': test.photo,
+            'description': test.description,
+            'type': test.type,
+            'price': float(test.price),
+            'preparation_instructions': test.preparation_instructions,
+            'hospital': {
+                'id': test.hospital.id,
+                'name': test.hospital.name,
+                'location': test.hospital.location,
+            },
+            'available': test.available,
+        })
+
+    return JsonResponse({'lab_tests': lab_tests_data})
+
+@csrf_exempt
+def book_lab_test(request):
+    if request.method != "POST":
+        return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+    try:
+        data = json.loads(request.body)
+        lab_test_id = int(data.get('lab_test_id', 0) or 0)
+        lab_test = LabTest.objects.get(id=lab_test_id)
+
+        booking = LabTestBooking.objects.create(
+            lab_test=lab_test,
+            patient_name=data.get('patient_name', '').strip(),
+            patient_email=data.get('patient_email', '').strip(),
+            patient_phone=data.get('patient_phone', '').strip(),
+            appointment_date=data.get('appointment_date'),
+            appointment_time=data.get('appointment_time'),
+            notes=data.get('notes', '').strip(),
+        )
+
+        return JsonResponse({
+            'success': True,
+            'id': booking.id,
+            'lab_test': lab_test.name,
+            'appointment_date': str(booking.appointment_date),
+            'appointment_time': str(booking.appointment_time),
+        })
+    except LabTest.DoesNotExist:
+        return JsonResponse({'error': 'Lab test ID not found.'}, status=400)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=400)
+
+@login_required
+@require_GET
+def lab_test_bookings_list(request):
+    user = request.user
+    bookings = LabTestBooking.objects.select_related('lab_test', 'lab_test__hospital').all()
+
+    # Filter based on user type
+    if user.user_type == 'patient':
+        bookings = bookings.filter(patient_email__iexact=user.email)
+    # Doctors and admins can see all bookings for now
+
+    result = []
+    for booking in bookings:
+        # Check if report exists
+        try:
+            report = LabTestReport.objects.get(booking=booking)
+            has_report = True
+            report_data = {
+                'id': report.id,
+                'results': report.results,
+                'summary': report.summary,
+                'doctor_notes': report.doctor_notes,
+                'status': report.status,
+                'report_file': request.build_absolute_uri(report.report_file.url) if report.report_file else None,
+            }
+        except LabTestReport.DoesNotExist:
+            has_report = False
+            report_data = None
+
+        result.append({
+            'id': booking.id,
+            'lab_test': {
+                'id': booking.lab_test.id,
+                'name': booking.lab_test.name,
+                'type': booking.lab_test.type,
+                'price': float(booking.lab_test.price),
+            },
+            'hospital': {
+                'id': booking.lab_test.hospital.id,
+                'name': booking.lab_test.hospital.name,
+            },
+            'patient_name': booking.patient_name,
+            'patient_email': booking.patient_email,
+            'patient_phone': booking.patient_phone,
+            'appointment_date': str(booking.appointment_date),
+            'appointment_time': str(booking.appointment_time),
+            'status': booking.status,
+            'notes': booking.notes,
+            'created_at': booking.created_at.isoformat(),
+            'report': report_data,
+        })
+
+    return JsonResponse({'bookings': result})
+
+@csrf_exempt
+def add_lab_test_report(request):
+    if request.method != "POST":
+        return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+    try:
+        if request.content_type and request.content_type.startswith('multipart/form-data'):
+            data = request.POST
+        else:
+            data = json.loads(request.body)
+
+        booking_id = int(data.get('booking_id', 0) or 0)
+        booking = LabTestBooking.objects.get(id=booking_id)
+
+        # Check if report already exists
+        if hasattr(booking, 'report'):
+            return JsonResponse({'error': 'Report already exists for this booking.'}, status=400)
+
+        report = LabTestReport.objects.create(
+            booking=booking,
+            results=data.get('results', '').strip(),
+            summary=data.get('summary', '').strip(),
+            doctor_notes=data.get('doctor_notes', '').strip(),
+            status=data.get('status', 'completed'),
+            report_file=request.FILES.get('report_file') if request.FILES.get('report_file') else None,
+        )
+
+        # Update booking status to completed
+        booking.status = 'completed'
+        booking.save()
+
+        return JsonResponse({
+            'success': True,
+            'id': report.id,
+            'booking_id': booking.id,
+        })
+    except LabTestBooking.DoesNotExist:
+        return JsonResponse({'error': 'Lab test booking ID not found.'}, status=400)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=400)
+
+@require_GET
+def lab_test_reports_list(request):
+    booking_id = request.GET.get('booking_id')
+    patient_email = request.GET.get('patient_email')
+    reports = LabTestReport.objects.select_related('booking', 'booking__lab_test', 'booking__lab_test__hospital').all()
+
+    if booking_id:
+        reports = reports.filter(booking_id=booking_id)
+    if patient_email:
+        reports = reports.filter(booking__patient_email__iexact=patient_email)
+
+    result = []
+    for report in reports:
+        result.append({
+            'id': report.id,
+            'booking': {
+                'id': report.booking.id,
+                'lab_test': {
+                    'id': report.booking.lab_test.id,
+                    'name': report.booking.lab_test.name,
+                    'type': report.booking.lab_test.type,
+                },
+                'hospital': {
+                    'id': report.booking.lab_test.hospital.id,
+                    'name': report.booking.lab_test.hospital.name,
+                },
+                'patient_name': report.booking.patient_name,
+                'patient_email': report.booking.patient_email,
+                'appointment_date': str(report.booking.appointment_date),
+            },
+            'report_date': report.report_date.isoformat(),
+            'results': report.results,
+            'summary': report.summary,
+            'doctor_notes': report.doctor_notes,
+            'report_file': report.report_file.url if report.report_file else None,
+            'status': report.status,
+        })
+
+    return JsonResponse({'reports': result})
     

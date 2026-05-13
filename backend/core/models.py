@@ -118,3 +118,18 @@ class LabTestBooking(models.Model):
     def __str__(self):
         return f"Booking for {self.lab_test.name} by {self.patient_name}"
 
+class LabTestReport(models.Model):
+    booking = models.OneToOneField(LabTestBooking, on_delete=models.CASCADE, related_name='report')
+    report_date = models.DateTimeField(auto_now_add=True)
+    results = models.TextField()  # Detailed test results
+    summary = models.TextField(blank=True)  # Brief summary
+    doctor_notes = models.TextField(blank=True)  # Doctor's interpretation
+    report_file = models.FileField(upload_to='lab_reports/', blank=True, null=True)  # PDF or image file
+    status = models.CharField(max_length=20, choices=[
+        ('pending', 'Pending'),
+        ('completed', 'Completed'),
+    ], default='pending')
+
+    def __str__(self):
+        return f"Report for {self.booking.lab_test.name} - {self.booking.patient_name}"
+
