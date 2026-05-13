@@ -43,30 +43,71 @@
         </section>
         <section class="auth-panel">
             <div class="auth-card">
-                <p class="eyebrow">Login</p>
-                <h2>Welcome back</h2>
-                <form class="auth-form">
-                    <label>
-                        <span>Email or phone</span>
-                        <input type="text" placeholder="name@example.com">
-                    </label>
-                    <label>
-                        <span>Password</span>
-                        <input type="password" placeholder="Enter password">
-                    </label>
-                    <div class="form-row">
-                        <label class="checkbox-row">
-                            <input type="checkbox">
-                            <span>Remember me</span>
+                <!-- Login Type Tabs -->
+                <div style="display: flex; border-bottom: 2px solid #e0e0e0; margin-bottom: 20px;">
+                    <button id="userLoginTab" class="login-tab active" onclick="switchLoginMode('user')" style="flex: 1; padding: 12px; background: none; border: none; border-bottom: 3px solid #2e7d32; color: #2e7d32; font-weight: 600; cursor: pointer;">
+                        👤 User Login
+                    </button>
+                    <button id="adminLoginTab" class="login-tab" onclick="switchLoginMode('admin')" style="flex: 1; padding: 12px; background: none; border: none; border-bottom: 3px solid transparent; color: #999; font-weight: 600; cursor: pointer; transition: all 0.3s;">
+                        🔐 Admin Login
+                    </button>
+                </div>
+
+                <!-- User Login Section -->
+                <div id="userLoginSection">
+                    <p class="eyebrow">Login</p>
+                    <h2>Welcome back</h2>
+                    <form class="auth-form" id="loginForm">
+                        <label>
+                            <span>Email or phone</span>
+                            <input type="text" id="loginEmail" placeholder="name@example.com" required>
                         </label>
-                        <a href="register.html">Create account</a>
-                    </div>
-                    <a class="button" href="dashboard.html">Login to dashboard</a>
-                </form>
+                        <label>
+                            <span>Password</span>
+                            <input type="password" id="loginPassword" placeholder="Enter password" required>
+                        </label>
+                        <div class="form-row">
+                            <label class="checkbox-row">
+                                <input type="checkbox" id="rememberMe">
+                                <span>Remember me</span>
+                            </label>
+                            <a href="register.html">Create account</a>
+                        </div>
+                        <button type="submit" class="button">Login to dashboard</button>
+                        <div id="loginMessage" style="margin-top: 10px; color: red;"></div>
+                    </form>
+                </div>
+
+                <!-- Admin Login Section -->
+                <div id="adminLoginSection" style="display: none;">
+                    <p class="eyebrow">Admin Access</p>
+                    <h2>Administrator Login</h2>
+                    <p style="color: #666; margin-bottom: 20px; font-size: 0.9em;">🔒 Secure admin portal. Only authorized administrators can access.</p>
+                    <form class="auth-form" id="adminLoginForm">
+                        <label>
+                            <span>Admin Email</span>
+                            <input type="text" id="adminEmail" placeholder="admin@example.com" required>
+                        </label>
+                        <label>
+                            <span>Password</span>
+                            <input type="password" id="adminPassword" placeholder="Enter password" required>
+                        </label>
+                        <div class="form-row">
+                            <label class="checkbox-row">
+                                <input type="checkbox" id="adminRememberMe">
+                                <span>Remember me</span>
+                            </label>
+                            <a href="index.html">Back to home</a>
+                        </div>
+                        <button type="submit" class="button" style="background: #c62828;">Login as Administrator</button>
+                        <div id="adminLoginMessage" style="margin-top: 10px; color: red;"></div>
+                    </form>
+                </div>
             </div>
         </section>
     </main>
 
     <script src="assets/script.js"></script>
+    <script src="assets/login.js"></script>
 </body>
 </html>
